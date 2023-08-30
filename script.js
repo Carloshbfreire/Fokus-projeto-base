@@ -6,6 +6,7 @@ focoBt.addEventListener('click', () => {
     html.setAttribute('data-contexto', 'foco')
 })
 
+
 curtoBt.addEventListener('click', () => {
     html.setAttribute('data-contexto', 'descanso-curto')
 })
