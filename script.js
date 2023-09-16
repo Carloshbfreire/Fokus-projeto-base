@@ -26,7 +26,7 @@ musicaFocoInput.addEventListener('change', () => {
     if(musica.paused) {
         musica.play()
     } else {
-        musica.pause
+        musica.pause()
     }    
 })
 
