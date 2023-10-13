@@ -1,4 +1,4 @@
-const tasklistContainer = document.querySelector('app__section-task-list')
+const tasklistContainer = document.querySelector('.app__section-task-list')
 
 let tarefas = [
     {
