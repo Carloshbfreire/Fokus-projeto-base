@@ -28,7 +28,13 @@ const taskIconSvg = `
 let tarefaSelecionada = null
 let itemTarefaSelecionada = null
 
+let tarefaEmEdição = null
+let paragraphEmEdição = null
+
 const selecionaTarefa = (tarefa, elemento) => {
+    if(tarefa.concluida){
+        return
+    }
 
 document.querySelectorAll('.app__section-task-list-item-active').forEach(function (button) {
     button.classList.remove('app__section-task-list-item-active')
@@ -49,9 +55,26 @@ elemento.classList.add('app__section-task-list-item-active')
 
 
 const limparForm = () => {
+    tarefaEmEdição = null
+    paragraphEmEdição = null
     textarea.value = ''
     formTask.classList.add('hidden')
+
 }
+
+const selecionaTarefaParaeditar = (tarefa, elemento) => {
+    if(tarefaEmEdição == tarefa){
+        limparForm()
+        return
+    }
+
+    formLabel.textContent='Editando tarefa'
+    tarefaEmEdição=tarefa
+    paragraphEmEdição=elemento
+    textarea.value = tarefa.descricao
+    formTask.classList.remove('hidden')
+}
+
 
 function createTask(tarefa) {
     const li = document.createElement('li')
@@ -67,15 +90,32 @@ function createTask(tarefa) {
 
     const button = document.createElement('button')
 
+    button.classList.add('app_button-edit')
+    const editIcon = document.createElement('img')
+    editIcon.setAttribute('src', 'imagens/edit.png')
+
+    button.appendChild(editIcon)
+
+    button.addEventListener('click', (event) => {
+        event.stopImmediatePropagation()
+        selecionaTarefaParaeditar(tarefa, paragraph)
+    })
+
     li.onclick = () => {
         selecionaTarefa(tarefa, li)
 
     }
 
     svgIcon.addEventListener('click', (event) => {
-        event.stopPropagation()
+        if(tarefa==tarefaSelecionada){
+            event.stopPropagation()
         button.setAttribute('disabled', true)
         li.classList.add('app__section-task-list-item-complete')
+        tarefaSelecionada.concluida = true
+        updateLocalStorage()
+
+        }
+       
     })
 
     if(tarefa.concluida){
@@ -85,6 +125,7 @@ function createTask(tarefa) {
 
     li.appendChild(svgIcon)
     li.appendChild(paragraph)
+    li.appendChild(button)
     
     return li
 }
@@ -111,6 +152,10 @@ const updateLocalStorage = () => {
 
 formTask.addEventListener('submit', (evento) => {
     evento.preventDefault()
+    if(tarefaEmEdição) {
+        tarefaEmEdição.descricao = textarea.value
+        paragraphEmEdição.textContent = textarea.value
+    } else {
     const task = {
         descricao: textarea.value,
         concluida: false
@@ -118,8 +163,17 @@ formTask.addEventListener('submit', (evento) => {
     tarefas.push(task)
     const taskItem = createTask(task)
     taskListContainer.appendChild(taskItem)
-    
+}    
     updateLocalStorage()
     limparForm()
+})
+
+document.addEventListener('TarefaFinalizada', function (e) {
+    if(tarefaSelecionada) {
+        tarefaSelecionada.concluida = true
+        itemTarefaSelecionada.classList.add('app__section-task-list-item-complete')
+        itemTarefaSelecionada.querySelector('button').setAttribute('disable', true)
+        updateLocalStorage()
+    }
 })
 
