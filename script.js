@@ -17,7 +17,7 @@ const audioPausa = new Audio('sons/pause.mp3');
 const audioTempoFinalizado = new Audio('sons/beep.mp3')
 
 
-let tempoDecorridoEmSegundos = 3
+let tempoDecorridoEmSegundos = 1500
 let intervaloId = null
 
 musica.loop = true
@@ -32,7 +32,7 @@ musicaFocoInput.addEventListener('change', () => {
 
 
 focoBt.addEventListener('click', () => {
-   tempoDecorridoEmSegundos = 3
+   tempoDecorridoEmSegundos = 1500
    alterandoContexto('foco')
    focoBt.classList.add('active')
 })
@@ -99,9 +99,7 @@ const contagemRegresiva = () => {
             document.dispatchEvent(event);
             tempoDecorridoEmSegundos = 5
             mostrarTempo()
-        }
-    
-
+        } 
 
         return
     }

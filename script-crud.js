@@ -12,6 +12,12 @@ const textarea = document.querySelector('.app__form-textarea')
 
 const btnCancelar = document.querySelector('.app__form-footer__button--cancel')
 
+const btnDeletar = document.querySelector('.app__form-footer__button--delete')
+
+
+const btnDeletarConcluidas = document.querySelector('#btn-remover-concluidas')
+const btnDeletarTodas = document.querySelector('#btn-remover-todas')
+
 const localStorageTarefas = localStorage.getItem('tarefas')
 
 let tarefas = localStorageTarefas ? JSON.parse(localStorageTarefas) : []
@@ -30,6 +36,16 @@ let itemTarefaSelecionada = null
 
 let tarefaEmEdição = null
 let paragraphEmEdição = null
+
+const removerTarefas = (somenteConcluidas) => {
+    const seletor = somenteConcluidas ? '.app__section-task-list-item-complete' : '.app__section-task-list-item'
+    document.querySelectorAll(seletor).forEach((element) => {
+        element.remove();
+    });
+
+    tarefas = somenteConcluidas ? tarefas.filter(t => !t.concluida) : []
+    updateLocalStorage()
+}
 
 const selecionaTarefa = (tarefa, elemento) => {
     if(tarefa.concluida){
@@ -140,6 +156,25 @@ cancelFormTaskBtn.addEventListener('click', () => {
 })
 
 btnCancelar.addEventListener('click', limparForm)
+
+btnDeletar.addEventListener('click', () => {
+    if (tarefaSelecionada){
+        const index = tarefas.indexOf(tarefaSelecionada)
+
+        if (index !== -1){
+            tarefas.splice(index, 1)
+        }
+
+        itemTarefaSelecionada.remove()
+        tarefas.filter(t=> t!= tarefaSelecionada)
+        itemTarefaSelecionada = null
+        tarefaSelecionada = null
+    }
+
+    updateLocalStorage()
+    limparForm()
+
+} )
 
 toggleFormTaskBtn.addEventListener('click', () => {
     formLabel.textContent = 'Adicionando tarefa'
